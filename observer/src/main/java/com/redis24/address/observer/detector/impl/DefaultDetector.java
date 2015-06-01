@@ -17,6 +17,7 @@ import com.redis24.address.observer.dto.AddressListDTO;
 import com.redis24.address.observer.dto.AddressListHistoryDTO;
 import com.redis24.address.observer.exception.AddressListNotFoundException;
 import com.redis24.address.observer.jpa.model.AddressList;
+import com.redis24.address.observer.jpa.model.AddressListHistory;
 import com.redis24.address.observer.service.AddressListHistoryService;
 import com.redis24.address.observer.service.AddressListService;
 import com.redis24.address.observer.util.AddressObserverConstants;
@@ -39,7 +40,8 @@ public class DefaultDetector implements AddressDetector {
 	public boolean processAddressDetection(AddressList address) throws IOException, AddressListNotFoundException {
 
 		LOGGER.debug("Processing comany address :  " + address.getCompanyName());
-		String urlContent = this.contentParser(address.getCompanyContactUrl());
+		URL url = new URL(address.getCompanyContactUrl());
+		String urlContent = this.contentParser(url);
 
 		if (this.isAnyChanges(urlContent, address.getCompanyAddress())) {
 
@@ -58,10 +60,10 @@ public class DefaultDetector implements AddressDetector {
 
 	}
 
-	public String contentParser(String contactUrl) throws IOException {
+	public String contentParser(URL url) throws IOException {
 
 		LOGGER.debug("url parsing started");
-		URL url = new URL(contactUrl);
+
 		URLConnection con = url.openConnection();
 		InputStream in = con.getInputStream();
 		String encoding = con.getContentEncoding();
@@ -83,7 +85,7 @@ public class DefaultDetector implements AddressDetector {
 
 	}
 
-	public void updateAddress(String urlContent, AddressList address) throws AddressListNotFoundException {
+	public AddressList updateAddress(String urlContent, AddressList address) throws AddressListNotFoundException {
 
 		LOGGER.debug("address updateing");
 		AddressListDTO addressListDTO = new AddressListDTO();
@@ -92,13 +94,14 @@ public class DefaultDetector implements AddressDetector {
 		addressListDTO.setUpdateDate(new Date());
 		addressListDTO.setUpdateUser(AddressObserverConstants.OBSERVER_CRON);
 
-		service.update(addressListDTO);
+		AddressList addressList = service.update(addressListDTO);
 		// TODO Auto-generated method stub
 		LOGGER.debug("address updated");
+		return addressList;
 
 	}
 
-	public void logAddressUpdates(AddressList address) {
+	public AddressListHistory logAddressUpdates(AddressList address) {
 
 		LOGGER.debug("logging address changes to database");
 
@@ -112,9 +115,10 @@ public class DefaultDetector implements AddressDetector {
 		addressListHistoryDTO.setCreateDate(new Date());
 		addressListHistoryDTO.setCreateUser(AddressObserverConstants.OBSERVER_CRON);
 
-		logHistoryService.add(addressListHistoryDTO);
+		AddressListHistory addressListHistory = logHistoryService.add(addressListHistoryDTO);
 
 		LOGGER.debug("logged address changes to database");
+		return addressListHistory;
 
 	}
 
