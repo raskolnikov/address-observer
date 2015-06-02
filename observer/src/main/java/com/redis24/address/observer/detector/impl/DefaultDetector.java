@@ -7,6 +7,9 @@ import java.net.URLConnection;
 import java.util.Date;
 
 import org.apache.commons.io.IOUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +28,7 @@ import com.redis24.address.observer.util.AddressObserverConstants;
 @Component("DefaultDetector")
 public class DefaultDetector implements AddressDetector {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(DefaultDetectorTest.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DefaultDetector.class);
 
 	private AddressListService service;
 	private AddressListHistoryService logHistoryService;
@@ -50,9 +53,7 @@ public class DefaultDetector implements AddressDetector {
 			this.updateAddress(urlContent, address);
 			this.logAddressUpdates(address);
 			this.sendMailToObservers(address);
-
 			return true;
-
 		}
 
 		LOGGER.debug("No changes found Company name :  " + address.getCompanyName());
@@ -69,8 +70,14 @@ public class DefaultDetector implements AddressDetector {
 		String encoding = con.getContentEncoding();
 		encoding = encoding == null ? "UTF-8" : encoding;
 		String body = IOUtils.toString(in, encoding);
-		LOGGER.debug("url parsed : " + body);
-		return body;
+		Document doc = Jsoup.parse(body);
+		// Regis contact page parser only
+		Element masthead = doc.select("body").first();
+		String addressText = masthead.text(); // Clean html tags from content
+
+		LOGGER.debug("url parsed : " + addressText);
+
+		return addressText;
 
 	}
 
@@ -95,7 +102,6 @@ public class DefaultDetector implements AddressDetector {
 		addressListDTO.setUpdateUser(AddressObserverConstants.OBSERVER_CRON);
 
 		AddressList addressList = service.update(addressListDTO);
-		// TODO Auto-generated method stub
 		LOGGER.debug("address updated");
 		return addressList;
 

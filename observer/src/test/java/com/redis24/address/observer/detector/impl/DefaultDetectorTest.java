@@ -86,7 +86,6 @@ public class DefaultDetectorTest {
 		URL filePathToUrl = new File("./src/test/resources/testUrlContentFile.html").toURI().toURL();
 		String actualContent = defaultDetector.contentParser(filePathToUrl);
 		assertThat(expectedContent, is(actualContent));
-
 	}
 
 	@Test
