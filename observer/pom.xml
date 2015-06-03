@@ -4,7 +4,7 @@
 
   <groupId>com.redis24.address</groupId>
   <artifactId>observer</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.1</version>
   <packaging>jar</packaging>
 
   <name>observer</name>
@@ -83,6 +83,46 @@
                     </reportPlugins>
                 </configuration>
             </plugin>
+         
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            
+            <configuration>
+                <archive>
+                    <manifest>
+                        <addClasspath>true</addClasspath>
+                        <mainClass>com.redis24.address.observer.AppMain</mainClass>
+                    </manifest>
+                </archive>
+            </configuration>
+        </plugin>
+
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+           
+            <executions>
+                <execution>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>shade</goal>
+                    </goals>
+                    <configuration>
+              <transformers>
+               <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+  <resource>META-INF/spring.handlers</resource>
+</transformer>
+<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+  <resource>META-INF/spring.schemas</resource>
+</transformer>
+              </transformers>
+            </configuration>
+                </execution>
+            </executions>
+
+        </plugin>
+ 
         </plugins>
     </build>
     
@@ -90,6 +130,8 @@
 
 
 		 <dependencies>
+		
+		 
 		<!-- Spring Framework -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -180,12 +222,7 @@
             <artifactId>hibernate-entitymanager</artifactId>
             <version>${hibernate.version}</version>
         </dependency>
-        <!-- H2 Database -->
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>${h2.version}</version>
-        </dependency>
+       
         <!-- BoneCP -->
         <dependency>
             <groupId>com.jolbox</groupId>
