@@ -37,9 +37,6 @@
 
     <build>
         <finalName>address.observer</finalName>
-        <filters>
-            <filter>profiles/${build.profile.id}/config.properties</filter>
-        </filters>
        
         <plugins>
           

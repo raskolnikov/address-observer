@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Component;
 
+import com.redis24.address.observer.ApplicationContext;
 import com.redis24.address.observer.detector.AddressDetector;
 import com.redis24.address.observer.exception.AddressListNotFoundException;
 import com.redis24.address.observer.jpa.model.AddressList;
@@ -29,7 +30,8 @@ public class AddressObserverTask {
 	public void executeAddressObserver() {
 
 		// open/read the application context file
-		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
+		ClassPathXmlApplicationContext ctx = (ClassPathXmlApplicationContext) ApplicationContext
+				.getApplicationContext();
 
 		LOGGER.info("Quartz job started");
 		List<AddressList> addressList = service.findAll();

@@ -8,10 +8,13 @@
         <property name="useCodeAsDefaultMessage" value="true"/>
     </bean>
 
-    <bean id="addressListService" name="todoService" class="org.mockito.Mockito" factory-method="mock">
+    <bean id="addressListService" name="addressListService" class="org.mockito.Mockito" factory-method="mock">
         <constructor-arg value="com.redis24.address.observer.service.AddressListService"/>
     </bean>
-     <bean id="addressListHistoryService" name="todoService" class="org.mockito.Mockito" factory-method="mock">
+     <bean id="addressListHistoryService" name="addressListHistoryService" class="org.mockito.Mockito" factory-method="mock">
         <constructor-arg value="com.redis24.address.observer.service.AddressListHistoryService"/>
+    </bean>
+    <bean id="addressObserverTask" name="addressObserverTask" class="org.mockito.Mockito" factory-method="mock">
+        <constructor-arg value="com.redis24.address.observer.quartz.AddressObserverTask"/>
     </bean>
 </beans>

@@ -82,12 +82,12 @@ public class DefaultDetector implements AddressDetector {
 	}
 
 	public boolean isAnyChanges(String urlContent, String currentAddress) {
-		LOGGER.debug("is there any changes ?");
+		LOGGER.debug("are there any changes ?");
 		if (!urlContent.equals(currentAddress)) {
 			LOGGER.debug("Changes found!");
 			return true;
 		}
-		LOGGER.debug("there is no changes!");
+		LOGGER.debug("there are no changes!");
 		return false;
 
 	}
